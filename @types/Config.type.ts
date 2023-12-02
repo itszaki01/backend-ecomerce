@@ -1,0 +1,1 @@
+type TConfig = 'DB_URI' | 'NODE_ENV' | 'PORT' | 'BASE_PATH'

@@ -1,0 +1,6 @@
+{
+    "PORT": "8000",
+    "NODE_ENV": "DEV",
+    "DB_URI": "mongodb+srv://itszacktouil:sgnFDaWq1LI39HUi@cluster0.fwjhvxt.mongodb.net/ecommerce",
+    "BASE_PATH":"/api/v1"
+}
