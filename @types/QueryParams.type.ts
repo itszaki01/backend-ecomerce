@@ -5,4 +5,5 @@ export type TQueryParams = {
     page:string,
     sort:string,
     fields:string
+    keyword:string
 }

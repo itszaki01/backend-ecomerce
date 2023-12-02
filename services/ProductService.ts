@@ -28,29 +28,54 @@ export const getAllProducts = expressAsyncHandler(async (req: TProductREQ, res, 
     const skip = (page - 1) * limit;
 
     //3: Build Query
-    const mongooseQuery = Product.find(JSON.parse(queryStr))
-        .limit(limit)
-        .skip(skip)
-        .populate("brand", "name")
-        .populate("category", "name")
-        .populate("subcategories", "name");
+    let mongooseQuery;
+    if (!req.query.keyword) {
+        mongooseQuery = Product.find(JSON.parse(queryStr))
+            .limit(limit)
+            .skip(skip)
+            .populate("brand", "name")
+            .populate("category", "name")
+            .populate("subcategories", "name");
+    } else {
+        const keyword = req.query.keyword;
+        
+        const query = {
+            $or: [{ title: { $regex: keyword, $options: "i" } }, { description: { $regex: keyword, $options: "i" } }],
+        };
+
+        mongooseQuery = Product.find(query)
+            .limit(limit)
+            .skip(skip)
+            .populate("brand", "name")
+            .populate("category", "name")
+            .populate("subcategories", "name");
+    }
+
+    //4:sortBy
+    if (req.query.sort) {
+        const sortBy = req.query.sort.replaceAll(",", " ");
+        mongooseQuery.sort(sortBy);
+    } else {
+        mongooseQuery.sort("-createdAt");
+    }
+
+    //4:Fileds Limiting
+    if (req.query.fields) {
+        const fields = req.query.fields.replaceAll(",", " ");
+        mongooseQuery.select(fields);
+    } else {
+        mongooseQuery.select("-__v");
+    }
 
     const products = await mongooseQuery;
-    const totalProducts = await Product.find(JSON.parse(queryStr));
 
     if (products.length == 0) {
-        if (page > Math.ceil(totalProducts.length / limit)) {
-            return next(new ApiError("This page not exist", 404));
-        } else {
-            return next(new ApiError("No Products or Wrong filter", 404));
-        }
+        return next(new ApiError("No Products or Wrong filter", 404));
     }
 
     const response: TDataRES = {
         results: products.length,
         page: page,
-        totalResults: totalProducts.length,
-        totalPages: Math.ceil(totalProducts.length / limit),
         data: products,
     };
 

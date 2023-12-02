@@ -1,5 +1,6 @@
 import { Request } from "express";
 import mongoose from "mongoose";
+import { TQueryParams } from "./QueryParams.type";
 
 export type TProductSchema = {
     title: string;
@@ -28,4 +29,4 @@ type TProductQueryParams = {
 };
 
 //Category Reusests Types
-export type TProductREQ = Request<{ id: string }, {}, TProductSchema, TProductQueryParams>;
+export type TProductREQ = Request<{ id: string }, {}, TProductSchema, TProductQueryParams & TQueryParams>;
