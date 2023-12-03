@@ -5,7 +5,7 @@ import { TDataRES } from "../@types/ResponseData.type";
 import slugify from "slugify";
 import { TBrandREQ } from "../@types/Brand.type";
 import { ApiFeatures } from "../utils/apiFeatures";
-import { deleteOne, updateOne } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -45,16 +45,7 @@ export const getAllBrands = expressAsyncHandler(async (req: TBrandREQ, res, next
  */
 //==========================================
 
-export const getBrand = expressAsyncHandler(async (req: TBrandREQ, res, next) => {
-    const { id } = req.params;
-    const brand = await Brand.findById(id);
-
-    const response: TDataRES = {
-        data: brand,
-    };
-
-    res.json(response);
-});
+export const getBrand = getOne(Brand)
 
 //==========================================
 /**
@@ -64,17 +55,7 @@ export const getBrand = expressAsyncHandler(async (req: TBrandREQ, res, next) =>
  */
 //==========================================
 
-export const createBrand = expressAsyncHandler(async (req: TBrandREQ, res) => {
-    const { name } = req.body;
-    //1:Create
-    const brand = await Brand.create({ name, slug: slugify(name) });
-    //Response
-    const response: TDataRES = {
-        data: brand,
-    };
-    res.status(201).json(response);
-});
-
+export const createBrand = createOne(Brand)
 //==========================================
 /**
  *  @description Update Brand by ID

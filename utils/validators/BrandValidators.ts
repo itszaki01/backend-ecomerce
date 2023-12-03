@@ -4,6 +4,7 @@ import { brandChecker } from "../checkers/brandChecker";
 import { applySlugify } from "../../middlewares/applySlugify";
 
 export const createBrandValidator = [
+    applySlugify,
     check("name", "Name is required")
         .notEmpty()
         .isLength({ min: 2 })

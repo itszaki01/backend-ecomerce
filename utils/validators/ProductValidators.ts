@@ -6,8 +6,13 @@ import { productChecker } from "../checkers/productChecker";
 import { SubCategory } from "../../models/SubCategoryModal";
 import { TSubCategoryREQ } from "../../@types/SubCategory.type";
 import { applySlugify } from "../../middlewares/applySlugify";
+import { Product } from "../../models/ProductModal";
+import { idChecker } from "../checkers/idChecker";
+import { CategoryModal } from "../../models/CategoryModal";
+import { Brand } from "../../models/BrandModal";
 
 export const createProductValidator = [
+    applySlugify,
     check("title").isLength({ min: 3 }).withMessage("must be at least 3 chars").notEmpty().withMessage("Product required"),
     check("description").notEmpty().withMessage("Product description is required").isLength({ max: 1000 }).withMessage("Too long description"),
     check("quantity").notEmpty().withMessage("Product quantity is required").isNumeric().withMessage("Product quantity must be a number"),
@@ -38,7 +43,9 @@ export const createProductValidator = [
         .withMessage("Product must be belong to a category")
         .isMongoId()
         .withMessage("Invalid ID formate")
-        .custom(categoryChecker),
+        .custom(async (value)=>{
+            return await idChecker(CategoryModal,value)
+        }),
     check("subcategories")
         .optional()
         .isMongoId()
@@ -46,7 +53,9 @@ export const createProductValidator = [
         .isArray()
         .custom(multiSubCategoryChecker)
         .custom(subCategoryBelongCategoryChecker),
-    check("brand").optional().isMongoId().withMessage("Invalid ID formate"),
+    check("brand").optional().isMongoId().withMessage("Invalid ID formate").custom(async (value)=>{
+        return await idChecker(Brand,value)
+    }),
     check("ratingsAverage")
         .optional()
         .isNumeric()
@@ -59,6 +68,31 @@ export const createProductValidator = [
     validatorMw,
 ];
 
-export const getProductValidator = [check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];
-export const updateProductValidator = [applySlugify,check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];
-export const deleteProductValidator = [check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];
+export const getProductValidator = [
+    check("id")
+        .isMongoId()
+        .withMessage("Invalid product id format")
+        .custom(async (value) => {
+            return await idChecker(Product, value);
+        }),
+    validatorMw,
+];
+export const updateProductValidator = [
+    applySlugify,
+    check("id")
+        .isMongoId()
+        .withMessage("Invalid product id format")
+        .custom(async (value) => {
+            return await idChecker(Product, value);
+        }),
+    validatorMw,
+];
+export const deleteProductValidator = [
+    check("id")
+        .isMongoId()
+        .withMessage("Invalid product id format")
+        .custom(async (value) => {
+            return await idChecker(Product, value);
+        }),
+    validatorMw,
+];

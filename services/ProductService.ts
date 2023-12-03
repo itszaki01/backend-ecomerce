@@ -6,7 +6,7 @@ import { ApiError } from "../utils/apiError";
 import { TProductREQ, TProductSchema } from "../@types/Product.type";
 import { TQueryParams, TQuerySortParams } from "../@types/QueryParams.type";
 import { ApiFeatures } from "../utils/apiFeatures";
-import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -45,14 +45,7 @@ export const getAllProducts = expressAsyncHandler(async (req: TProductREQ, res, 
  *  @access Public
  */
 //==========================================
-export const getProduct = expressAsyncHandler(async (req: TProductREQ, res) => {
-    const product = await Product.findById(req.params.id).populate("brand", "name").populate("category", "name").populate("subcategories", "name");
-    const response: TDataRES = {
-        data: product,
-    };
-
-    res.json(response);
-});
+export const getProduct = getOne(Product)
 
 //==========================================
 /**
@@ -61,11 +54,7 @@ export const getProduct = expressAsyncHandler(async (req: TProductREQ, res) => {
  *  @access Private
  */
 //==========================================
-export const createNewProduct = expressAsyncHandler(async (req: TProductREQ, res) => {
-    const body = { ...req.body, slug: slugify(req.body.title) };
-    const product = await Product.create(body);
-    res.status(201).json({ data: product });
-});
+export const createNewProduct = createOne(Product)
 
 //==========================================
 /**
@@ -74,7 +63,7 @@ export const createNewProduct = expressAsyncHandler(async (req: TProductREQ, res
  *  @access Private
  */
 //==========================================
-export const updateProduct = updateFactoryHanlder(Product);
+export const updateProduct = updateOne(Product);
 
 //==========================================
 /**
@@ -83,4 +72,4 @@ export const updateProduct = updateFactoryHanlder(Product);
  *  @access Private
  */
 //==========================================
-export const deleteProduct = deletFactory(Product);
+export const deleteProduct = deleteOne(Product);

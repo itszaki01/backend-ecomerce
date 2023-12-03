@@ -5,7 +5,7 @@ import expressAsyncHandler from "express-async-handler";
 import { TDataRES } from "../@types/ResponseData.type";
 import { ApiError } from "../utils/apiError";
 import { ApiFeatures } from "../utils/apiFeatures";
-import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -43,14 +43,7 @@ export const getAllCategories = expressAsyncHandler(async (req: TCategoryREQ, re
  *  @access Public
  */
 //==========================================
-export const getCategory = expressAsyncHandler(async (req: TCategoryREQ, res, next) => {
-    const category = await Category.findById(req.params.id);
-    const response: TDataRES = {
-        data: category,
-    };
-
-    res.json(response);
-});
+export const getCategory = getOne(Category)
 
 //==========================================
 /**
@@ -59,12 +52,7 @@ export const getCategory = expressAsyncHandler(async (req: TCategoryREQ, res, ne
  *  @access Private
  */
 //==========================================
-export const createNewCategory = expressAsyncHandler(async (req: TCategoryREQ, res) => {
-    const { name } = req.body;
-    const catigory = await Category.create({ name, slug: slugify(name) });
-    res.status(201).json({ data: catigory });
-});
-
+export const createNewCategory = createOne(Category)
 //==========================================
 /**
  *  @description Update specific category by :id
@@ -72,7 +60,7 @@ export const createNewCategory = expressAsyncHandler(async (req: TCategoryREQ, r
  *  @access Private
  */
 //==========================================
-export const updateCategory = updateFactoryHanlder(Category)
+export const updateCategory = updateOne(Category)
 
 //==========================================
 /**
@@ -81,4 +69,4 @@ export const updateCategory = updateFactoryHanlder(Category)
  *  @access Private
  */
 //==========================================
-export const deleteCategory = deletFactory(Category)
+export const deleteCategory = deleteOne(Category)

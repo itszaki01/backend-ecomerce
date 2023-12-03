@@ -8,7 +8,7 @@ import { ApiError } from "../utils/apiError";
 import mongoose from "mongoose";
 import { ApiFeatures } from "../utils/apiFeatures";
 import { TQueryParams } from "../@types/QueryParams.type";
-import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -50,16 +50,7 @@ export const getAllSubCategories = expressAsyncHandler(async (req: TSubCategoryR
  *  @access Public
  */
 //==========================================
-export const getSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ, res, next) => {
-    const { id } = req.params;
-    const subCategory = await SubCategory.findById(id).populate("category", "name");
-
-    const response: TDataRES = {
-        data: subCategory,
-    };
-
-    res.json(response);
-});
+export const getSubCategory = getOne(SubCategory)
 
 //==========================================
 /**
@@ -68,24 +59,7 @@ export const getSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ, r
  *  @access Private
  */
 //==========================================
-export const createSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ, res, next) => {
-    const { name, category } = req.body;
-    //1:check if category is exist
-    const checkCategory = await Category.findById(category);
-    if (!checkCategory) {
-        return next(new ApiError(`No Category for this id ${category}`, 404));
-    }
-
-    //2:Create
-    const subCategory = await SubCategory.create({ name, category, slug: slugify(name) });
-
-    //Response
-    const response: TDataRES = {
-        data: subCategory,
-    };
-
-    res.status(201).json(response);
-});
+export const createSubCategory = createOne(SubCategory)
 
 //==========================================
 /**
@@ -94,7 +68,7 @@ export const createSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ
  *  @access Private
  */
 //==========================================
-export const updateSubCategory = updateFactoryHanlder(SubCategory)
+export const updateSubCategory = updateOne(SubCategory)
 
 //==========================================
 /**
@@ -103,4 +77,4 @@ export const updateSubCategory = updateFactoryHanlder(SubCategory)
  *  @access Private
  */
 //==========================================
-export const deleteSubCategory = deletFactory(SubCategory)
+export const deleteSubCategory = deleteOne(SubCategory)

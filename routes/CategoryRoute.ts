@@ -13,9 +13,9 @@ const router = express.Router();
 router.route("/").get(getAllCategories).post(createCategoryValidator, createNewCategory);
 router
     .route("/:id")
-    .get(getCategoryValidator, getCategory)
-    .put(updateCategoryValidator, updateCategory)
-    .delete(deleteCategoryValidator, deleteCategory);
+    .get(getCategoryValidator as any, getCategory)
+    .put(updateCategoryValidator as any, updateCategory)
+    .delete(deleteCategoryValidator as any, deleteCategory);
 
 //Readirect nested route to subcategries route
 router.use("/:categoryID/subcategories", SubCategoryRoute);

@@ -12,4 +12,14 @@ export type TQueryParams = {
     categoryID?:string
 }
 
-export type TQuerParamsREQ = Request<{},{},{slug:string,name:string,title:string},TQueryParams>
+export type TBodyParma = {
+    name:string,
+    title:string,
+    slug:string,
+    description:string,
+    price:number,
+    stock:number,
+    category:string,
+}
+
+export type TQuerParamsREQ = Request<TQueryParams,{},TBodyParma,TQueryParams>
