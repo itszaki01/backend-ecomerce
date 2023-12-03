@@ -6,6 +6,8 @@ import { TDataRES } from "../@types/ResponseData.type";
 import { CategoryModal as Category } from "../models/CategoryModal";
 import { ApiError } from "../utils/apiError";
 import mongoose from "mongoose";
+import { ApiFeatures } from "../utils/apiFeatures";
+import { TQueryParams } from "../@types/QueryParams.type";
 
 //==========================================
 /**
@@ -16,40 +18,29 @@ import mongoose from "mongoose";
  */
 //==========================================
 export const getAllSubCategories = expressAsyncHandler(async (req: TSubCategoryREQ, res, next) => {
-    const { id } = req.params;
-    let filterObject = {};
-
+    const apiFeatures = new ApiFeatures(SubCategory, SubCategory, req.query);
+    const { categoryID: id } = req.params;
+    let filterQuery: TQueryParams = {};
     if (id) {
-        filterObject = { category: id };
+        filterQuery = { category: id };
     }
 
-    //2: Get all SubCategory
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 5;
-    const skip = (page - 1) * limit;
+    (await (await apiFeatures.filter(filterQuery)).search("ByName", filterQuery)).sort().fieldsLimit().pagination();
 
-    const subCategories = await SubCategory.find(filterObject).skip(skip).limit(limit).populate("category", "name");
-    
+    const subCategories = await apiFeatures.mongooseQuery.populate("category", "name");
+
     if (!subCategories || subCategories.length === 0) {
         return next(new ApiError(`No SubCategoies yet`, 404));
     }
 
-    //this just use for length
-    const totalSubCategories = await SubCategory.find(filterObject);
-
     const response: TDataRES = {
         results: subCategories.length,
-        page: 1,
-        totalResults: totalSubCategories.length,
-        totalPages: Math.ceil(totalSubCategories.length / limit),
+        ...apiFeatures.paginateResults,
         data: subCategories,
     };
 
     res.json(response);
 });
-
-
-
 
 //==========================================
 /**
@@ -68,9 +59,6 @@ export const getSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ, r
 
     res.json(response);
 });
-
-
-
 
 //==========================================
 /**
@@ -98,12 +86,9 @@ export const createSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ
     res.status(201).json(response);
 });
 
-
-
-
 //==========================================
 /**
- *  @description Create new SubCategory
+ *  @description Update SubCategory
  *  @route PUT /api/v1/subcategories/:id
  *  @access Private
  */
@@ -130,10 +115,6 @@ export const updateSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ
 
     res.status(201).json(response);
 });
-
-
-
-
 
 //==========================================
 /**

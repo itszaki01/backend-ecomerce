@@ -7,7 +7,6 @@ import {
     getSubCategoryValidator,
     updateSubCategoryValidator,
 } from "../utils/validators/subCategoryValidators";
-import { updateCategoryValidator } from "../utils/validators/categoryValidators";
 
 //===================================================================================
 const router = express.Router({ mergeParams: true });

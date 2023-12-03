@@ -7,7 +7,7 @@ const categorySchema = new mongoose.Schema<TCategorySchema>(
             type: "string",
             required: [true, "Category Required"],
             trim: true,
-            minlength: [8, "Too short category length"],
+            minlength: [6, "Too short category length"],
             maxlength: [32, "Too long category name"],
             unique: true,
         },

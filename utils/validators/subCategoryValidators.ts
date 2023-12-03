@@ -7,6 +7,7 @@ import { categoryChecker } from "../checkers/categoryChecker";
 
 const subCategoryIdPass = expressAsyncHandler((req:TSubCategoryREQ,res,next)=>{
     if(req.params.categoryID) req.body.category = req.params.categoryID
+    
     next()
 }) 
 

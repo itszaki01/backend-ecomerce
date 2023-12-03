@@ -3,8 +3,9 @@ import slugify from "slugify";
 import expressAsyncHandler from "express-async-handler";
 import { TDataRES } from "../@types/ResponseData.type";
 import { ApiError } from "../utils/apiError";
-import { TProductREQ } from "../@types/Product.type";
+import { TProductREQ, TProductSchema } from "../@types/Product.type";
 import { TQueryParams, TQuerySortParams } from "../@types/QueryParams.type";
+import { ApiFeatures } from "../utils/apiFeatures";
 
 //==========================================
 /**
@@ -14,68 +15,22 @@ import { TQueryParams, TQuerySortParams } from "../@types/QueryParams.type";
  */
 //==========================================
 export const getAllProducts = expressAsyncHandler(async (req: TProductREQ, res, next) => {
-    //1:Filters
-    const queryFilters = { ...req.query } as TQueryParams;
-    const querySortParams: TQuerySortParams = ["limit", "page", "sort", "fields"];
-    querySortParams.forEach((key) => delete queryFilters[key]);
+    const apiFeatures = new ApiFeatures(Product, Product, req.query);
 
-    //apply filtraion with [get,gt,lte,lt]
-    const queryStr = JSON.stringify(queryFilters).replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    (await (await apiFeatures.filter()).search("ByTitle")).sort().fieldsLimit().pagination();
 
-    //2: Pagination
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 5;
-    const skip = (page - 1) * limit;
-
-    //3: Build Query
-    let mongooseQuery;
-    if (!req.query.keyword) {
-        mongooseQuery = Product.find(JSON.parse(queryStr))
-            .limit(limit)
-            .skip(skip)
-            .populate("brand", "name")
-            .populate("category", "name")
-            .populate("subcategories", "name");
-    } else {
-        const keyword = req.query.keyword;
-        
-        const query = {
-            $or: [{ title: { $regex: keyword, $options: "i" } }, { description: { $regex: keyword, $options: "i" } }],
-        };
-
-        mongooseQuery = Product.find(query)
-            .limit(limit)
-            .skip(skip)
-            .populate("brand", "name")
-            .populate("category", "name")
-            .populate("subcategories", "name");
-    }
-
-    //4:sortBy
-    if (req.query.sort) {
-        const sortBy = req.query.sort.replaceAll(",", " ");
-        mongooseQuery.sort(sortBy);
-    } else {
-        mongooseQuery.sort("-createdAt");
-    }
-
-    //4:Fileds Limiting
-    if (req.query.fields) {
-        const fields = req.query.fields.replaceAll(",", " ");
-        mongooseQuery.select(fields);
-    } else {
-        mongooseQuery.select("-__v");
-    }
-
-    const products = await mongooseQuery;
+    const products = await apiFeatures.mongooseQuery
+        .populate("category", "name")
+        .populate("brand", "name -_id")
+        .populate("subcategories", "name -_id");
 
     if (products.length == 0) {
-        return next(new ApiError("No Products or Wrong filter", 404));
+        return next(new ApiError("No data", 404));
     }
 
-    const response: TDataRES = {
+    const response = {
         results: products.length,
-        page: page,
+        ...apiFeatures.paginateResults,
         data: products,
     };
 

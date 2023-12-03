@@ -4,6 +4,7 @@ import { ApiError } from "../utils/apiError";
 import { TDataRES } from "../@types/ResponseData.type";
 import slugify from "slugify";
 import { TBrandREQ } from "../@types/Brand.type";
+import { ApiFeatures } from "../utils/apiFeatures";
 
 //==========================================
 /**
@@ -12,12 +13,12 @@ import { TBrandREQ } from "../@types/Brand.type";
  *  @access Public
  */
 //==========================================
-export const getAllBrands = expressAsyncHandler(async (req, res, next) => {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 5;
-    const skip = (page - 1) * limit;
+export const getAllBrands = expressAsyncHandler(async (req: TBrandREQ, res, next) => {
+    const apiFeatures = new ApiFeatures(Brand, Brand, req.query);
 
-    const brands = await Brand.find().skip(skip).limit(limit);
+    (await (await apiFeatures.filter()).search()).sort().fieldsLimit().pagination();
+
+    const brands = await apiFeatures.mongooseQuery;
 
     if (!brands || brands.length === 0) {
         return next(new ApiError(`No Brands yet`, 404));
@@ -28,9 +29,7 @@ export const getAllBrands = expressAsyncHandler(async (req, res, next) => {
 
     const response: TDataRES = {
         results: brands.length,
-        page: 1,
-        totalResults: totalBrands.length,
-        totalPages: Math.ceil(totalBrands.length / limit),
+        ...apiFeatures.paginateResults,
         data: brands,
     };
 
@@ -45,7 +44,7 @@ export const getAllBrands = expressAsyncHandler(async (req, res, next) => {
  */
 //==========================================
 
-export const getBrand = expressAsyncHandler(async (req:TBrandREQ, res, next) => {
+export const getBrand = expressAsyncHandler(async (req: TBrandREQ, res, next) => {
     const { id } = req.params;
     const brand = await Brand.findById(id);
 
@@ -64,7 +63,7 @@ export const getBrand = expressAsyncHandler(async (req:TBrandREQ, res, next) => 
  */
 //==========================================
 
-export const createBrand = expressAsyncHandler(async (req:TBrandREQ, res) => {
+export const createBrand = expressAsyncHandler(async (req: TBrandREQ, res) => {
     const { name } = req.body;
     //1:Create
     const brand = await Brand.create({ name, slug: slugify(name) });
@@ -83,10 +82,10 @@ export const createBrand = expressAsyncHandler(async (req:TBrandREQ, res) => {
  */
 //==========================================
 
-export const updateBrand = expressAsyncHandler(async (req:TBrandREQ, res, next) => {
+export const updateBrand = expressAsyncHandler(async (req: TBrandREQ, res, next) => {
     const { id } = req.params;
     const { name } = req.body;
-    const brand = await Brand.findByIdAndUpdate(id, {name,slug:slugify(name)},{new:true});
+    const brand = await Brand.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true });
 
     const response: TDataRES = {
         data: brand,
@@ -103,7 +102,7 @@ export const updateBrand = expressAsyncHandler(async (req:TBrandREQ, res, next) 
  */
 //==========================================
 
-export const deleteBrand = expressAsyncHandler(async (req:TBrandREQ, res) => {
+export const deleteBrand = expressAsyncHandler(async (req: TBrandREQ, res) => {
     const { id } = req.params;
     const brand = await Brand.findByIdAndDelete(id);
     res.json({ message: "Brand deleted successfuly" });

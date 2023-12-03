@@ -4,6 +4,7 @@ import slugify from "slugify";
 import expressAsyncHandler from "express-async-handler";
 import { TDataRES } from "../@types/ResponseData.type";
 import { ApiError } from "../utils/apiError";
+import { ApiFeatures } from "../utils/apiFeatures";
 
 //==========================================
 /**
@@ -13,22 +14,19 @@ import { ApiError } from "../utils/apiError";
  */
 //==========================================
 export const getAllCategories = expressAsyncHandler(async (req: TCategoryREQ, res, next) => {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 5;
-    const skip = (page - 1) * limit;
+    const apiFeatures = new ApiFeatures(Category, Category, req.query);
 
-    const categories = await Category.find({}).skip(skip).limit(limit);
-    const totalCategories = await Category.find({});
+    (await (await apiFeatures.filter()).search()).sort().fieldsLimit().pagination();
 
+    const categories = await apiFeatures.mongooseQuery;
+    
     if (categories.length == 0) {
         return next(new ApiError("No Categories yet", 404));
     }
     
     const response: TDataRES = {
         results: categories.length,
-        page: page,
-        totalResults: totalCategories.length,
-        totalPages: Math.ceil(totalCategories.length / limit),
+        ...apiFeatures.paginateResults,
         data: categories,
     };
 

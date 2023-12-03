@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { TQueryParams } from "./QueryParams.type";
 
 export type TCategorySchema = {
     name: string;
@@ -6,10 +7,6 @@ export type TCategorySchema = {
     image: string;
 };
 
-type TCategoriesQueryParams = {
-    limit: string;
-    page: string;
-};
 
 //Category Reusests Types
-export type TCategoryREQ = Request<{ id: string }, {}, TCategorySchema, TCategoriesQueryParams>;
+export type TCategoryREQ = Request<{ id: string }, {}, TCategorySchema, TQueryParams>;

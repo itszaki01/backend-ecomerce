@@ -1,5 +1,6 @@
 import { Request } from "express";
 import mongoose from "mongoose";
+import { TQueryParams } from "./QueryParams.type";
 
 export type TSubCategorySchema = {
     name: string;
@@ -14,4 +15,4 @@ type TSubCategoryParams = {
     categoryID:string
 };
 
-export type TSubCategoryREQ = Request<TSubCategoryParams, {}, TSubCategorySchema>;
+export type TSubCategoryREQ = Request<TSubCategoryParams, {}, TSubCategorySchema,TQueryParams>;

@@ -1,5 +1,6 @@
 import { Request } from "express";
 import mongoose from "mongoose";
+import { TQueryParams } from "./QueryParams.type";
 
 export type TBrandSchema = {
     name: string;
@@ -13,4 +14,4 @@ type TBrandParams = {
     id: string;
 };
 
-export type TBrandREQ = Request<TBrandParams, {}, TBrandSchema>;
+export type TBrandREQ = Request<TBrandParams, {}, TBrandSchema,TQueryParams>;

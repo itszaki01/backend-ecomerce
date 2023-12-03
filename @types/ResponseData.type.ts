@@ -1,7 +1,13 @@
 export type TDataRES = {
     results?:number,
-    page?:number,
+    data?:unknown
+}
+
+export type TPaginateResults = {
+    limit?:number
+    currentPage?:number,
     totalResults?:number
     totalPages?:number
-    data:unknown
+    next?:number | null,
+    prev?:number | null
 }
