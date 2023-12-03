@@ -1,6 +1,7 @@
 import { check } from "express-validator";
 import { validatorMw } from "../../middlewares/validatorMw";
 import { brandChecker } from "../checkers/brandChecker";
+import { applySlugify } from "../../middlewares/applySlugify";
 
 export const createBrandValidator = [
     check("name", "Name is required")
@@ -15,6 +16,7 @@ export const createBrandValidator = [
 export const getBrandValidator = [check("id").isMongoId().withMessage("Invalid brand id format").custom(brandChecker), validatorMw];
 
 export const updateBrandValidator = [
+    applySlugify,
     check("id").isMongoId().withMessage("Invalid brand id format").custom(brandChecker),
     check("name", "Name is required")
         .notEmpty()

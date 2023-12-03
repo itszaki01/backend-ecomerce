@@ -6,6 +6,7 @@ import { ApiError } from "../utils/apiError";
 import { TProductREQ, TProductSchema } from "../@types/Product.type";
 import { TQueryParams, TQuerySortParams } from "../@types/QueryParams.type";
 import { ApiFeatures } from "../utils/apiFeatures";
+import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -73,17 +74,7 @@ export const createNewProduct = expressAsyncHandler(async (req: TProductREQ, res
  *  @access Private
  */
 //==========================================
-export const updateProduct = expressAsyncHandler(async (req: TProductREQ, res, next) => {
-    if (req.body.title) req.body.slug = slugify(req.body.title);
-    const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, { new: true });
-
-    const response: TDataRES = {
-        data: product,
-    };
-
-    res.json(response);
-});
+export const updateProduct = updateFactoryHanlder(Product);
 
 //==========================================
 /**
@@ -92,8 +83,4 @@ export const updateProduct = expressAsyncHandler(async (req: TProductREQ, res, n
  *  @access Private
  */
 //==========================================
-export const deleteProduct = expressAsyncHandler(async (req: TProductREQ, res, next) => {
-    const { id } = req.params;
-    const product = await Product.findByIdAndDelete(id);
-    res.status(200).json({ message: `Product Deleted Successfuly` });
-});
+export const deleteProduct = deletFactory(Product);

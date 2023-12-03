@@ -4,6 +4,7 @@ import expressAsyncHandler from "express-async-handler";
 import { TSubCategoryREQ } from "../../@types/SubCategory.type";
 import { singleSubCategoryChecker } from "../checkers/subCategoryChecker";
 import { categoryChecker } from "../checkers/categoryChecker";
+import { applySlugify } from "../../middlewares/applySlugify";
 
 const subCategoryIdPass = expressAsyncHandler((req:TSubCategoryREQ,res,next)=>{
     if(req.params.categoryID) req.body.category = req.params.categoryID
@@ -31,6 +32,7 @@ export const getSubCategoryValidator = [
 ]
 
 export const updateSubCategoryValidator = [
+    applySlugify,
     check('id').isMongoId().withMessage('Invalid SubCategory id format').custom(singleSubCategoryChecker),
     check('category','SubCategory must be belong to category').notEmpty().isMongoId().withMessage('Invalid SubCategory id format').custom(categoryChecker),
     check('name','Name is required').notEmpty().isLength({min:2}).withMessage('Too Short SubCategory name'),

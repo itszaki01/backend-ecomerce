@@ -1,6 +1,7 @@
 import { check } from "express-validator";
 import { validatorMw } from "../../middlewares/validatorMw";
 import { categoryChecker } from "../checkers/categoryChecker";
+import { applySlugify } from "../../middlewares/applySlugify";
 
 export const createCategoryValidator = [
     check("name")
@@ -15,5 +16,5 @@ export const createCategoryValidator = [
 
 export const getCategoyAllSubCatigoriesValidator = [check("id").isMongoId().withMessage("Invalid category id format").custom(categoryChecker), validatorMw];
 export const getCategoryValidator = [check("id").isMongoId().withMessage("Invalid category id format").custom(categoryChecker), validatorMw];
-export const updateCategoryValidator = [check("id").isMongoId().withMessage("Invalid category id format").custom(categoryChecker), validatorMw];
+export const updateCategoryValidator = [applySlugify,check("id").isMongoId().withMessage("Invalid category id format").custom(categoryChecker), validatorMw];
 export const deleteCategoryValidator = [check("id").isMongoId().withMessage("Invalid category id format").custom(categoryChecker), validatorMw];

@@ -5,6 +5,7 @@ import { TDataRES } from "../@types/ResponseData.type";
 import slugify from "slugify";
 import { TBrandREQ } from "../@types/Brand.type";
 import { ApiFeatures } from "../utils/apiFeatures";
+import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -82,17 +83,7 @@ export const createBrand = expressAsyncHandler(async (req: TBrandREQ, res) => {
  */
 //==========================================
 
-export const updateBrand = expressAsyncHandler(async (req: TBrandREQ, res, next) => {
-    const { id } = req.params;
-    const { name } = req.body;
-    const brand = await Brand.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true });
-
-    const response: TDataRES = {
-        data: brand,
-    };
-
-    res.json(response);
-});
+export const updateBrand = updateFactoryHanlder(Brand)
 
 //==========================================
 /**
@@ -102,8 +93,4 @@ export const updateBrand = expressAsyncHandler(async (req: TBrandREQ, res, next)
  */
 //==========================================
 
-export const deleteBrand = expressAsyncHandler(async (req: TBrandREQ, res) => {
-    const { id } = req.params;
-    const brand = await Brand.findByIdAndDelete(id);
-    res.json({ message: "Brand deleted successfuly" });
-});
+export const deleteBrand = deletFactory(Brand)

@@ -8,6 +8,7 @@ import { ApiError } from "../utils/apiError";
 import mongoose from "mongoose";
 import { ApiFeatures } from "../utils/apiFeatures";
 import { TQueryParams } from "../@types/QueryParams.type";
+import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -93,28 +94,7 @@ export const createSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ
  *  @access Private
  */
 //==========================================
-export const updateSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ, res, next) => {
-    const { name, category } = req.body;
-    const { id } = req.params;
-    //1:check if category is exist
-    const checkCategory = await Category.findById(category);
-    if (!checkCategory) {
-        return next(new ApiError(`No Category for this id ${category}`, 404));
-    }
-
-    //2:Create
-    const updatedSubCategory = await SubCategory.findByIdAndUpdate(id, { name, category, slug: slugify(name) }, { new: true }).populate(
-        "category",
-        "name slug -_id"
-    );
-
-    //Response
-    const response: TDataRES = {
-        data: updatedSubCategory,
-    };
-
-    res.status(201).json(response);
-});
+export const updateSubCategory = updateFactoryHanlder(SubCategory)
 
 //==========================================
 /**
@@ -123,12 +103,4 @@ export const updateSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ
  *  @access Private
  */
 //==========================================
-export const deleteSubCategory = expressAsyncHandler(async (req: TSubCategoryREQ, res, next) => {
-    const { id } = req.params;
-    const subCategory = await SubCategory.findByIdAndDelete(id);
-    if (!subCategory) {
-        return next(new ApiError(`No SubCategory for this id ${id}`, 404));
-    }
-
-    res.json({ message: `SubCategory deleted successfuly` });
-});
+export const deleteSubCategory = deletFactory(SubCategory)

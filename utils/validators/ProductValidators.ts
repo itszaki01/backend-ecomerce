@@ -5,6 +5,7 @@ import { multiSubCategoryChecker, subCategoryBelongCategoryChecker } from "../ch
 import { productChecker } from "../checkers/productChecker";
 import { SubCategory } from "../../models/SubCategoryModal";
 import { TSubCategoryREQ } from "../../@types/SubCategory.type";
+import { applySlugify } from "../../middlewares/applySlugify";
 
 export const createProductValidator = [
     check("title").isLength({ min: 3 }).withMessage("must be at least 3 chars").notEmpty().withMessage("Product required"),
@@ -59,5 +60,5 @@ export const createProductValidator = [
 ];
 
 export const getProductValidator = [check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];
-export const updateProductValidator = [check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];
+export const updateProductValidator = [applySlugify,check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];
 export const deleteProductValidator = [check("id").isMongoId().withMessage("Invalid product id format").custom(productChecker), validatorMw];

@@ -5,6 +5,7 @@ import expressAsyncHandler from "express-async-handler";
 import { TDataRES } from "../@types/ResponseData.type";
 import { ApiError } from "../utils/apiError";
 import { ApiFeatures } from "../utils/apiFeatures";
+import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -71,17 +72,7 @@ export const createNewCategory = expressAsyncHandler(async (req: TCategoryREQ, r
  *  @access Private
  */
 //==========================================
-export const updateCategory = expressAsyncHandler(async (req: TCategoryREQ, res, next) => {
-    const { name } = req.body;
-    const { id } = req.params;
-    const category = await Category.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true });
-
-    const response: TDataRES = {
-        data: category,
-    };
-
-    res.json(response);
-});
+export const updateCategory = updateFactoryHanlder(Category)
 
 //==========================================
 /**
@@ -90,8 +81,4 @@ export const updateCategory = expressAsyncHandler(async (req: TCategoryREQ, res,
  *  @access Private
  */
 //==========================================
-export const deleteCategory = expressAsyncHandler(async (req: TCategoryREQ, res, next) => {
-    const { id } = req.params;
-    const category = await Category.findByIdAndDelete(id);
-    res.status(200).json({ message: `Category Deleted Successfuly` });
-});
+export const deleteCategory = deletFactory(Category)
