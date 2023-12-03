@@ -25,4 +25,6 @@ const categorySchema = new mongoose.Schema<TCategorySchema>(
     }
 );
 
+
+
 export const CategoryModal = mongoose.model("Category", categorySchema);

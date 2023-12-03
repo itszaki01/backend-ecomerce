@@ -6,7 +6,7 @@ import { ApiError } from "../utils/apiError";
 import { TProductREQ, TProductSchema } from "../@types/Product.type";
 import { TQueryParams, TQuerySortParams } from "../@types/QueryParams.type";
 import { ApiFeatures } from "../utils/apiFeatures";
-import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getAll, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -15,28 +15,7 @@ import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFact
  *  @access Public
  */
 //==========================================
-export const getAllProducts = expressAsyncHandler(async (req: TProductREQ, res, next) => {
-    const apiFeatures = new ApiFeatures(Product, Product, req.query);
-
-    (await (await apiFeatures.filter()).search("ByTitle")).sort().fieldsLimit().pagination();
-
-    const products = await apiFeatures.mongooseQuery
-        .populate("category", "name")
-        .populate("brand", "name -_id")
-        .populate("subcategories", "name -_id");
-
-    if (products.length == 0) {
-        return next(new ApiError("No data", 404));
-    }
-
-    const response = {
-        results: products.length,
-        ...apiFeatures.paginateResults,
-        data: products,
-    };
-
-    res.json(response);
-});
+export const getAllProducts = getAll(Product,'ByTitle')
 
 //==========================================
 /**

@@ -1,10 +1,6 @@
 import { check } from "express-validator";
 import { validatorMw } from "../../middlewares/validatorMw";
-import { categoryChecker } from "../checkers/categoryChecker";
 import { multiSubCategoryChecker, subCategoryBelongCategoryChecker } from "../checkers/subCategoryChecker";
-import { productChecker } from "../checkers/productChecker";
-import { SubCategory } from "../../models/SubCategoryModal";
-import { TSubCategoryREQ } from "../../@types/SubCategory.type";
 import { applySlugify } from "../../middlewares/applySlugify";
 import { Product } from "../../models/ProductModal";
 import { idChecker } from "../checkers/idChecker";

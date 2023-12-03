@@ -1,6 +1,5 @@
 import { check } from "express-validator";
 import { validatorMw } from "../../middlewares/validatorMw";
-import { categoryChecker } from "../checkers/categoryChecker";
 import { applySlugify } from "../../middlewares/applySlugify";
 import { idChecker } from "../checkers/idChecker";
 import { CategoryModal as Category } from "../../models/CategoryModal";

@@ -7,14 +7,15 @@ import {
     getSubCategoryValidator,
     updateSubCategoryValidator,
 } from "../utils/validators/subCategoryValidators";
+import { filterObj } from "../middlewares/filterObjMw";
 
 //===================================================================================
 const router = express.Router({ mergeParams: true });
-router.route("/").get(getAllSubCategoryValidator as any, getAllSubCategories).post(createSubCategoryValidator as any, createSubCategory);
+router.route("/").get(getAllSubCategoryValidator,filterObj, getAllSubCategories).post(createSubCategoryValidator, createSubCategory);
 
 router
     .route("/:id")
-    .get(getSubCategoryValidator as any, getSubCategory)
-    .put(updateSubCategoryValidator as any, updateSubCategory)
-    .delete(deleteSubCategoryValidator as any, deleteSubCategory);
+    .get(getSubCategoryValidator, getSubCategory)
+    .put(updateSubCategoryValidator, updateSubCategory)
+    .delete(deleteSubCategoryValidator, deleteSubCategory);
 export const SubCategoryRoute = router;

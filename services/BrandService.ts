@@ -5,7 +5,7 @@ import { TDataRES } from "../@types/ResponseData.type";
 import slugify from "slugify";
 import { TBrandREQ } from "../@types/Brand.type";
 import { ApiFeatures } from "../utils/apiFeatures";
-import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getAll, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -14,29 +14,7 @@ import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFact
  *  @access Public
  */
 //==========================================
-export const getAllBrands = expressAsyncHandler(async (req: TBrandREQ, res, next) => {
-    const apiFeatures = new ApiFeatures(Brand, Brand, req.query);
-
-    (await (await apiFeatures.filter()).search()).sort().fieldsLimit().pagination();
-
-    const brands = await apiFeatures.mongooseQuery;
-
-    if (!brands || brands.length === 0) {
-        return next(new ApiError(`No Brands yet`, 404));
-    }
-
-    //this just use for length
-    const totalBrands = await Brand.find();
-
-    const response: TDataRES = {
-        results: brands.length,
-        ...apiFeatures.paginateResults,
-        data: brands,
-    };
-
-    res.json(response);
-});
-
+export const getAllBrands = getAll(Brand)
 //==========================================
 /**
  *  @description Get Brand by ID

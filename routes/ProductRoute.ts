@@ -13,12 +13,12 @@ const router = express.Router();
 //Product Routes
 
 //@ts-ignore
-router.route("/").get(getAllProducts).post(createProductValidator as any, createNewProduct);
+router.route("/").get(getAllProducts).post(createProductValidator , createNewProduct);
 router
     .route("/:id")
-    .get(getProductValidator as any, getProduct)
-    .put(updateProductValidator as any, updateProduct)
-    .delete(deleteProductValidator as any, deleteProduct);
+    .get(getProductValidator, getProduct)
+    .put(updateProductValidator, updateProduct)
+    .delete(deleteProductValidator, deleteProduct);
 
 
 export const ProductRoute = router;

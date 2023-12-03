@@ -3,7 +3,6 @@ import { validatorMw } from "../../middlewares/validatorMw";
 import expressAsyncHandler from "express-async-handler";
 import { TSubCategoryREQ } from "../../@types/SubCategory.type";
 import { singleSubCategoryChecker } from "../checkers/subCategoryChecker";
-import { categoryChecker } from "../checkers/categoryChecker";
 import { applySlugify } from "../../middlewares/applySlugify";
 import { idChecker } from "../checkers/idChecker";
 import { SubCategory } from "../../models/SubCategoryModal";
@@ -65,7 +64,9 @@ export const updateSubCategoryValidator = [
         .notEmpty()
         .isMongoId()
         .withMessage("Invalid SubCategory id format")
-        .custom(categoryChecker),
+        .custom(async (value) => {
+            return await idChecker(CategoryModal, value);
+        }),
     check("name", "Name is required").notEmpty().isLength({ min: 2 }).withMessage("Too Short SubCategory name"),
     validatorMw,
 ];

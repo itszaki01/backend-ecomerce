@@ -13,13 +13,13 @@ export type TQueryParams = {
 }
 
 export type TBodyParma = {
-    name:string,
-    title:string,
-    slug:string,
-    description:string,
-    price:number,
-    stock:number,
-    category:string,
+    name?:string,
+    title?:string,
+    slug?:string,
+    description?:string,
+    price?:number,
+    stock?:number,
+    category?:string,
 }
 
 export type TQuerParamsREQ = Request<TQueryParams,{},TBodyParma,TQueryParams>

@@ -4,7 +4,7 @@ import { createBrandValidator, deleteBrandValidator, getBrandValidator, updateBr
 
 const router = express.Router();
 
-router.route("/").get(getAllBrands).post(createBrandValidator as any, createBrand);
-router.route("/:id").get(getBrandValidator as any, getBrand).put(updateBrandValidator as any, updateBrand).delete(deleteBrandValidator as any, deleteBrand);
+router.route("/").get(getAllBrands).post(createBrandValidator, createBrand);
+router.route("/:id").get(getBrandValidator, getBrand).put(updateBrandValidator as any, updateBrand).delete(deleteBrandValidator, deleteBrand);
 
 export const BrandRoute = router;

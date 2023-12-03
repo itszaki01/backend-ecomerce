@@ -8,7 +8,7 @@ import { ApiError } from "../utils/apiError";
 import mongoose from "mongoose";
 import { ApiFeatures } from "../utils/apiFeatures";
 import { TQueryParams } from "../@types/QueryParams.type";
-import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFactory";
+import { createOne, deleteOne, getAll, getOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -18,30 +18,7 @@ import { createOne, deleteOne, getOne, updateOne } from "../helpers/handlersFact
  *  @access Public
  */
 //==========================================
-export const getAllSubCategories = expressAsyncHandler(async (req: TSubCategoryREQ, res, next) => {
-    const apiFeatures = new ApiFeatures(SubCategory, SubCategory, req.query);
-    const { categoryID: id } = req.params;
-    let filterQuery: TQueryParams = {};
-    if (id) {
-        filterQuery = { category: id };
-    }
-
-    (await (await apiFeatures.filter(filterQuery)).search("ByName", filterQuery)).sort().fieldsLimit().pagination();
-
-    const subCategories = await apiFeatures.mongooseQuery.populate("category", "name");
-
-    if (!subCategories || subCategories.length === 0) {
-        return next(new ApiError(`No SubCategoies yet`, 404));
-    }
-
-    const response: TDataRES = {
-        results: subCategories.length,
-        ...apiFeatures.paginateResults,
-        data: subCategories,
-    };
-
-    res.json(response);
-});
+export const getAllSubCategories = getAll(SubCategory)
 
 //==========================================
 /**
