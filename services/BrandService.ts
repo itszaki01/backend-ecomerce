@@ -5,7 +5,7 @@ import { TDataRES } from "../@types/ResponseData.type";
 import slugify from "slugify";
 import { TBrandREQ } from "../@types/Brand.type";
 import { ApiFeatures } from "../utils/apiFeatures";
-import { deletFactory, updateFactoryHanlder } from "../helpers/handlersFactory";
+import { deleteOne, updateOne } from "../helpers/handlersFactory";
 
 //==========================================
 /**
@@ -83,7 +83,7 @@ export const createBrand = expressAsyncHandler(async (req: TBrandREQ, res) => {
  */
 //==========================================
 
-export const updateBrand = updateFactoryHanlder(Brand)
+export const updateBrand = updateOne(Brand)
 
 //==========================================
 /**
@@ -93,4 +93,4 @@ export const updateBrand = updateFactoryHanlder(Brand)
  */
 //==========================================
 
-export const deleteBrand = deletFactory(Brand)
+export const deleteBrand = deleteOne(Brand)
