@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import { SubCategoryRoute } from "./routes/SubCategoryRoute";
 import { BrandRoute } from "./routes/BrandRoute";
 import { ProductRoute } from "./routes/ProductRoute";
+import path from "path";
 
 //Configs
 dotenv.config({ path: "./config.env" });
@@ -18,6 +19,9 @@ const BASE_PATH = process.env.BASE_PATH as string;
 
 //Create app
 const app = express();
+
+//allow static files
+app.use(express.static(path.join(__dirname,'uploads')))
 
 //ConnectDB
 connectDB(DB_URI);

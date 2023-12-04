@@ -7,14 +7,16 @@ import {
     updateCategoryValidator,
 } from "../utils/validators/categoryValidators";
 import { SubCategoryRoute } from "./SubCategoryRoute";
-const router = express.Router();
+import { uploadOneImg } from "../middlewares/uploadOneImg";
 
+const router = express.Router();
 //Category Routes
-router.route("/").get(getAllCategories).post(createCategoryValidator, createNewCategory);
+//@ts-ignore
+router.route("/").get(getAllCategories).post(uploadOneImg('category'),createCategoryValidator, createNewCategory);
 router
     .route("/:id")
-    .get(getCategoryValidator , getCategory)
-    .put(updateCategoryValidator, updateCategory)
+    .get(getCategoryValidator, getCategory)
+    .put(uploadOneImg('category'),updateCategoryValidator, updateCategory)
     .delete(deleteCategoryValidator, deleteCategory);
 
 //Readirect nested route to subcategries route

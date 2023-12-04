@@ -25,6 +25,7 @@ const subCategorySchema = new mongoose.Schema<TSubCategorySchema>(
         timestamps: true,
     }
 );
+
 subCategorySchema.pre(/^find/, function (next) {
     //@ts-ignore
     this.populate("category", "name");

@@ -24,7 +24,17 @@ const categorySchema = new mongoose.Schema<TCategorySchema>(
         timestamps: true,
     }
 );
-
-
+function setImageUrl(doc:any){
+    if(doc.image){
+        const imageUrl = `${process.env.BASE_URL}/category/${doc.image}`
+        doc.image =imageUrl
+    }
+}
+categorySchema.post('init',function(doc){
+    setImageUrl(doc)
+})
+categorySchema.post('save',function(doc){
+    setImageUrl(doc)
+})
 
 export const CategoryModal = mongoose.model("Category", categorySchema);

@@ -6,14 +6,15 @@ import {
     getProductValidator,
     updateProductValidator,
 } from "../utils/validators/ProductValidators";
+import { imagesRsizer, uploadImages } from "../middlewares/uploadImages";
 
 
 const router = express.Router();
 
-//Product Routes
 
+//Product Routes
 //@ts-ignore
-router.route("/").get(getAllProducts).post(createProductValidator , createNewProduct);
+router.route("/").get(getAllProducts).post(uploadImages(),imagesRsizer,createProductValidator , createNewProduct);
 router
     .route("/:id")
     .get(getProductValidator, getProduct)

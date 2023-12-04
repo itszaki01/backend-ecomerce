@@ -1,11 +1,22 @@
-import { TCategoryREQ } from "../@types/Categorys.type";
 import { CategoryModal as Category } from "../models/CategoryModal";
-import slugify from "slugify";
-import expressAsyncHandler from "express-async-handler";
-import { TDataRES } from "../@types/ResponseData.type";
-import { ApiError } from "../utils/apiError";
-import { ApiFeatures } from "../utils/apiFeatures";
+
 import { createOne, deleteOne, getAll, getOne, updateOne } from "../helpers/handlersFactory";
+import multer, { FileFilterCallback } from "multer";
+import { ApiError } from "../utils/apiError";
+import { Request } from "express";
+import expressAsyncHandler from "express-async-handler";
+import sharp from "sharp";
+// //1: diskStoreage method
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "uploads/category");
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, `category-${uuidv4()}-${Date.now()}-${file.originalname}`);
+//     },
+// });
+
+
 
 //==========================================
 /**
@@ -14,9 +25,7 @@ import { createOne, deleteOne, getAll, getOne, updateOne } from "../helpers/hand
  *  @access Public
  */
 //==========================================
-export const getAllCategories = getAll(Category)
-
-
+export const getAllCategories = getAll(Category);
 
 //==========================================
 /**
@@ -25,7 +34,7 @@ export const getAllCategories = getAll(Category)
  *  @access Public
  */
 //==========================================
-export const getCategory = getOne(Category)
+export const getCategory = getOne(Category);
 
 //==========================================
 /**
@@ -34,7 +43,7 @@ export const getCategory = getOne(Category)
  *  @access Private
  */
 //==========================================
-export const createNewCategory = createOne(Category)
+export const createNewCategory = createOne(Category);
 //==========================================
 /**
  *  @description Update specific category by :id
@@ -42,7 +51,7 @@ export const createNewCategory = createOne(Category)
  *  @access Private
  */
 //==========================================
-export const updateCategory = updateOne(Category)
+export const updateCategory = updateOne(Category);
 
 //==========================================
 /**
@@ -51,4 +60,4 @@ export const updateCategory = updateOne(Category)
  *  @access Private
  */
 //==========================================
-export const deleteCategory = deleteOne(Category)
+export const deleteCategory = deleteOne(Category);

@@ -1,9 +1,8 @@
 import expressAsyncHandler from "express-async-handler";
-import { TQuerParamsREQ } from "../@types/QueryParams.type";
-import { CustomRequest } from "../@types/ResponseData.type";
+import { TFilterObj } from "../@types/Other.type";
 
 export const filterObj = expressAsyncHandler(async (req, res, next) => {
-    const _req = req as CustomRequest
+    const _req = req as TFilterObj
     const { categoryID: id } = req.params;
     _req.filterObj = {} as any;
     if (id) {

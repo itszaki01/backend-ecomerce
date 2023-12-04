@@ -1,10 +1,10 @@
 import expressAsyncHandler from "express-async-handler";
 import mongoose from "mongoose";
-import { CustomRequest, TDataRES } from "../@types/ResponseData.type";
-import slugify from "slugify";
+import {  TDataRES } from "../@types/ResponseData.type";
 import { ApiError } from "../utils/apiError";
 import { TQuerParamsREQ } from "../@types/QueryParams.type";
 import { ApiFeatures } from "../utils/apiFeatures";
+import { TFilterObj } from "../@types/Other.type";
 
 export const deleteOne = <T>(Model: mongoose.Model<T>) =>
     expressAsyncHandler(async (req, res, next) => {
@@ -22,6 +22,7 @@ export const updateOne = <T>(Modal: mongoose.Model<T>) =>
 
 export const createOne = <T>(Modal: mongoose.Model<T>) =>
     expressAsyncHandler(async (req: TQuerParamsREQ, res) => {
+        console.log(req.body)
         const data = await Modal.create(req.body);
         res.status(201).json(data);
     });
@@ -40,7 +41,7 @@ export const getOne = <T>(Modal: mongoose.Model<T>) =>
 
 export const getAll = <T>(Modal: mongoose.Model<T>, ByMethod?: "ByName" | "ByTitle") =>
     expressAsyncHandler(async (req, res, next) => {
-        const _req = req as CustomRequest;
+        const _req = req as TFilterObj;
         const apiFeatures = new ApiFeatures(Modal, Modal, req.query);
 
         (await (await apiFeatures.filter(_req.filterObj as any)).search(ByMethod, _req.filterObj as any)).sort().fieldsLimit().pagination();
