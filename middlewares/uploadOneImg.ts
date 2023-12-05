@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ApiError } from "../utils/apiError";
 
 const memoryStoreage = multer.memoryStorage();
-export const uploadSingleImage = (fieldName: "image" | "imageCover" = "image") => {
+export const uploadSingleImage = (fieldName: "image" | "imageCover" | "profileImg" = "image") => {
     const imageFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
         if (file.mimetype.startsWith("image")) {
             cb(null, true);
@@ -22,19 +22,23 @@ export const uploadSingleImage = (fieldName: "image" | "imageCover" = "image") =
 };
 
 //ResizeImage
-export const resizeSingleImg = (pathName: "category" | "brand" | "product", imgSize = 500) =>
+export const resizeSingleImg = (pathName: "category" | "brand" | "product" | "users", imgSize = 500) =>
     expressAsyncHandler(async (req, res, next) => {
-        const filename = `${pathName}-${uuidv4()}-${Date.now()}.jpeg`;
-        await sharp(req.file?.buffer)
-            .resize(imgSize, imgSize)
-            .toFormat("jpeg")
-            .jpeg({ quality: 90 })
-            .toFile(`uploads/${pathName}/${filename}`);
-
-        if (pathName === "product") {
-            req.body.imageCover = filename;
-        } else {
-            req.body.image = filename;
+        if(req.file){
+            const filename = `${pathName}-${uuidv4()}-${Date.now()}.jpeg`;
+            await sharp(req.file?.buffer)
+                .resize(imgSize, imgSize)
+                .toFormat("jpeg")
+                .jpeg({ quality: 90 })
+                .toFile(`uploads/${pathName}/${filename}`);
+    
+            if (pathName === "product") {
+                req.body.imageCover = filename;
+            } else if (pathName === "users") {
+                req.body.profileImg = filename;
+            } else {
+                req.body.image = filename;
+            }
         }
         next();
     });

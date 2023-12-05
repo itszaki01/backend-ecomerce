@@ -10,6 +10,9 @@ import { BrandRoute } from "./routes/BrandRoute";
 import { ProductRoute } from "./routes/ProductRoute";
 import path from "path";
 import bodyParser from "body-parser";
+import { UserRoute } from "./routes/UserRoute";
+import { authRoute } from "./routes/authRoute";
+import { uploadProgressMiddleware } from "./middlewares/uploadProgressMiddleware";
 
 //Configs
 dotenv.config({ path: "./config.env" });
@@ -28,8 +31,8 @@ app.use(express.static(path.join(__dirname,'uploads')))
 connectDB(DB_URI);
 
 //Middlewares
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
+// app.use(uploadProgressMiddleware)
 if (NODE_ENV.startsWith("DEV")) {
     app.use(morgan("dev"));
     console.log(`Mode == ${NODE_ENV}`);
@@ -42,6 +45,8 @@ app.use(`${BASE_PATH}/categories`, CategoryRouter);
 app.use(`${BASE_PATH}/subcategories`, SubCategoryRoute);
 app.use(`${BASE_PATH}/brands`, BrandRoute);
 app.use(`${BASE_PATH}/products`, ProductRoute);
+app.use(`${BASE_PATH}/users`, UserRoute);
+app.use(`${BASE_PATH}/auth`, authRoute);
 
 
 

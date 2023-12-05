@@ -8,10 +8,11 @@ import {
 } from "../utils/validators/categoryValidators";
 import { SubCategoryRoute } from "./SubCategoryRoute";
 import { resizeSingleImg, uploadSingleImage } from "../middlewares/uploadOneImg";
+import { auth } from "../services/authService";
 
 const router = express.Router();
 //Category Routes
-router.route("/").get(getAllCategories).post(uploadSingleImage(),createCategoryValidator,resizeSingleImg('category'),createNewCategory);
+router.route("/").get(getAllCategories).post(auth,uploadSingleImage(),createCategoryValidator,resizeSingleImg('category'),createNewCategory);
 router
     .route("/:id")
     .get(getCategoryValidator, getCategory)
