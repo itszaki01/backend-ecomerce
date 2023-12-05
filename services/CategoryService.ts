@@ -1,14 +1,12 @@
 import { CategoryModal as Category } from "../models/CategoryModal";
 
 import { createOne, deleteOne, getAll, getOne, updateOne } from "../helpers/handlersFactory";
-import multer, { FileFilterCallback } from "multer";
-import { ApiError } from "../utils/apiError";
-import { Request } from "express";
-import expressAsyncHandler from "express-async-handler";
-import sharp from "sharp";
-// //1: diskStoreage method
-// const storage = multer.diskStorage({
+
+
+//1: diskStoreage method
+// export const storage = multer.diskStorage({
 //     destination: (req, file, cb) => {
+//         console.log(file)
 //         cb(null, "uploads/category");
 //     },
 //     filename: (req, file, cb) => {
@@ -16,6 +14,8 @@ import sharp from "sharp";
 //     },
 // });
 
+// const upload = multer()
+// export const categoryImageUploader = upload.single('image')
 
 
 //==========================================

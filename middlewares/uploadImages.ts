@@ -9,6 +9,7 @@ export const uploadImages = () => {
     const memoryStoreage = multer.memoryStorage();
 
     const imageFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
+        
         if (file.mimetype.startsWith("image")) {
             cb(null, true);
         } else {
@@ -16,7 +17,7 @@ export const uploadImages = () => {
             cb(new ApiError("Only Images allowed", 500), false);
         }
     };
-
+    
     //@ts-ignore
     const upload = multer({ storage: memoryStoreage, fileFilter: imageFilter });
     //UploadImage
@@ -40,8 +41,6 @@ export const imagesRsizer = expressAsyncHandler(async (req, res, next) => {
     if (req.files) {
         req.body.images = await Promise.all(
             _req.files.images.map(async (img,idx) => {
-                console.log('calek');
-                
                 const filename = `products-${uuidv4()}-${Date.now()}${idx}.jpeg`;
                 await sharp(img.buffer).resize(500, 500).toFormat("jpeg").jpeg({ quality: 90 }).toFile(`uploads/product/${filename}`);
                 return filename;

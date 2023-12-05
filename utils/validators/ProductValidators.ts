@@ -6,10 +6,32 @@ import { Product } from "../../models/ProductModal";
 import { idChecker } from "../checkers/idChecker";
 import { CategoryModal } from "../../models/CategoryModal";
 import { Brand } from "../../models/BrandModal";
+import * as formidable from 'formidable';
+import expressAsyncHandler from "express-async-handler";
 
+// export const parseBody = async (req, res, next) => {
+//     const form = new formidable.IncomingForm();
+//     const _req = req as any
+//     form.parse(req, (err, fields, files) => {
+//       if (err) {
+//         return res.status(500).json({ error: 'Error parsing form data' });
+//       }
+  
+//       // Combine form fields and body data into a single JSON object
+//       let jsonData = {} as any
+//         for (const key in fields) {
+//             //@ts-ignore
+//             jsonData[key] = fields[key][0]
+//         }
+//       req.test = jsonData
+//       console.log(req.test);
+      
+//     });
+//     next()
+// }
 export const createProductValidator = [
     applySlugify,
-    check("title").isLength({ min: 3 }).withMessage("must be at least 3 chars").notEmpty().withMessage("Product required"),
+    check("title").isLength({ min: 3 }).withMessage("title must be at least 3 chars").notEmpty().withMessage("Product required"),
     check("description").notEmpty().withMessage("Product description is required").isLength({ max: 1000 }).withMessage("Too long description"),
     check("quantity").notEmpty().withMessage("Product quantity is required").isNumeric().withMessage("Product quantity must be a number"),
     check("sold").optional().isNumeric().withMessage("Product quantity must be a number"),
@@ -32,15 +54,15 @@ export const createProductValidator = [
             return true;
         }),
     check("colors").optional().isArray().withMessage("availableColors should be array of string"),
-    check("imageCover").notEmpty().withMessage("Product imageCover is required"),
+    check("imageCover"),
     check("images").optional().isArray().withMessage("images should be array of string"),
     check("category")
         .notEmpty()
         .withMessage("Product must be belong to a category")
         .isMongoId()
         .withMessage("Invalid ID formate")
-        .custom(async (value)=>{
-            return await idChecker(CategoryModal,value)
+        .custom(async (value) => {
+            return await idChecker(CategoryModal, value);
         }),
     check("subcategories")
         .optional()
@@ -49,9 +71,13 @@ export const createProductValidator = [
         .isArray()
         .custom(multiSubCategoryChecker)
         .custom(subCategoryBelongCategoryChecker),
-    check("brand").optional().isMongoId().withMessage("Invalid ID formate").custom(async (value)=>{
-        return await idChecker(Brand,value)
-    }),
+    check("brand")
+        .optional()
+        .isMongoId()
+        .withMessage("Invalid ID formate")
+        .custom(async (value) => {
+            return await idChecker(Brand, value);
+        }),
     check("ratingsAverage")
         .optional()
         .isNumeric()

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ApiError } from "../utils/apiError";
 
 const memoryStoreage = multer.memoryStorage();
-const uploadImage = (fieldName: "image" | "imageCover" = "image") => {
+export const uploadSingleImage = (fieldName: "image" | "imageCover" = "image") => {
     const imageFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
         if (file.mimetype.startsWith("image")) {
             cb(null, true);
@@ -22,7 +22,7 @@ const uploadImage = (fieldName: "image" | "imageCover" = "image") => {
 };
 
 //ResizeImage
-const resizeImg = (pathName: "category" | "brand" | "product", imgSize = 500) =>
+export const resizeSingleImg = (pathName: "category" | "brand" | "product", imgSize = 500) =>
     expressAsyncHandler(async (req, res, next) => {
         const filename = `${pathName}-${uuidv4()}-${Date.now()}.jpeg`;
         await sharp(req.file?.buffer)
@@ -38,8 +38,3 @@ const resizeImg = (pathName: "category" | "brand" | "product", imgSize = 500) =>
         }
         next();
     });
-
-export const uploadOneImg = (pathName: "category" | "brand", imgSize?: number, fieldName: "image" | "imageCover" = "image") => [
-    uploadImage(),
-    resizeImg(pathName, imgSize),
-];

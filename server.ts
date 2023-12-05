@@ -9,6 +9,7 @@ import { SubCategoryRoute } from "./routes/SubCategoryRoute";
 import { BrandRoute } from "./routes/BrandRoute";
 import { ProductRoute } from "./routes/ProductRoute";
 import path from "path";
+import bodyParser from "body-parser";
 
 //Configs
 dotenv.config({ path: "./config.env" });
@@ -27,7 +28,8 @@ app.use(express.static(path.join(__dirname,'uploads')))
 connectDB(DB_URI);
 
 //Middlewares
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 if (NODE_ENV.startsWith("DEV")) {
     app.use(morgan("dev"));
     console.log(`Mode == ${NODE_ENV}`);

@@ -14,7 +14,8 @@ const router = express.Router();
 
 //Product Routes
 //@ts-ignore
-router.route("/").get(getAllProducts).post(uploadImages(),imagesRsizer,createProductValidator , createNewProduct);
+router.route("/").get(getAllProducts).post(uploadImages(),createProductValidator,imagesRsizer, createNewProduct);
+// router.route("/").get(getAllProducts).post(parseBody, createNewProduct);
 router
     .route("/:id")
     .get(getProductValidator, getProduct)
