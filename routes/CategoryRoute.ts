@@ -8,16 +8,16 @@ import {
 } from "../utils/validators/categoryValidators";
 import { SubCategoryRoute } from "./SubCategoryRoute";
 import { resizeSingleImg, uploadSingleImage } from "../middlewares/uploadOneImg";
-import { auth } from "../services/authService";
+import { auth, allowTo } from "../services/authService";
 
 const router = express.Router();
 //Category Routes
-router.route("/").get(getAllCategories).post(auth,uploadSingleImage(),createCategoryValidator,resizeSingleImg('category'),createNewCategory);
+router.route("/").get(getAllCategories).post(auth,allowTo('admin'),uploadSingleImage(),createCategoryValidator,resizeSingleImg('category'),createNewCategory);
 router
     .route("/:id")
     .get(getCategoryValidator, getCategory)
-    .put(uploadSingleImage(),updateCategoryValidator,resizeSingleImg('category'), updateCategory)
-    .delete(deleteCategoryValidator, deleteCategory);
+    .put(auth,allowTo('admin'),uploadSingleImage(),updateCategoryValidator,resizeSingleImg('category'), updateCategory)
+    .delete(auth,allowTo('admin'),deleteCategoryValidator, deleteCategory);
 
 //Readirect nested route to subcategries route
 router.use("/:categoryID/subcategories", SubCategoryRoute);

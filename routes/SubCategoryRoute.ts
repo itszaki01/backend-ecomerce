@@ -8,14 +8,15 @@ import {
     updateSubCategoryValidator,
 } from "../utils/validators/subCategoryValidators";
 import { filterObj } from "../middlewares/filterObjMw";
+import { auth, allowTo } from "../services/authService";
 
 //===================================================================================
 const router = express.Router({ mergeParams: true });
-router.route("/").get(getAllSubCategoryValidator,filterObj, getAllSubCategories).post(createSubCategoryValidator, createSubCategory);
+router.route("/").get(getAllSubCategoryValidator,filterObj, getAllSubCategories).post(auth,allowTo('admin'),createSubCategoryValidator, createSubCategory);
 
 router
     .route("/:id")
     .get(getSubCategoryValidator, getSubCategory)
-    .put(updateSubCategoryValidator, updateSubCategory)
-    .delete(deleteSubCategoryValidator, deleteSubCategory);
+    .put(auth,allowTo('admin'),updateSubCategoryValidator, updateSubCategory)
+    .delete(auth,allowTo('admin'),deleteSubCategoryValidator, deleteSubCategory);
 export const SubCategoryRoute = router;

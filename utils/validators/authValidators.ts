@@ -41,3 +41,22 @@ export const logInValidator = [
     check("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
     validatorMw
 ]
+
+export const forgotPasswordValidator = [
+    check("email").isEmail().withMessage("Invalid email"),
+    validatorMw
+]
+
+export const resetPasswordValidator = [
+    check("newPassword").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+    check("newPasswordConfirm")
+        .notEmpty()
+        .withMessage("Password confirm is required").custom((value, { req }) =>{
+            if (value !== req.body.newPassword) {
+                throw new Error("Password confirm does not match password");
+            }else{
+                return true
+            }
+        } ),
+    validatorMw
+]

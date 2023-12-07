@@ -30,7 +30,6 @@ export const createOne = <T>(Modal: mongoose.Model<T>) =>
 export const getOne = <T>(Modal: mongoose.Model<T>) =>
     expressAsyncHandler(async (req: TQuerParamsREQ, res, next) => {
         //@ts-ignore
-        console.log(req.test);
         const data = await Modal.findById(req.params.id);
         // .populate("brand", "name").populate("category", "name").populate("subcategories", "name");
         
