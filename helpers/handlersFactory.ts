@@ -1,15 +1,22 @@
 import expressAsyncHandler from "express-async-handler";
 import mongoose from "mongoose";
-import {  TDataRES } from "../@types/ResponseData.type";
+import { TDataRES } from "../@types/ResponseData.type";
 import { ApiError } from "../utils/apiError";
 import { TQuerParamsREQ } from "../@types/QueryParams.type";
 import { ApiFeatures } from "../utils/apiFeatures";
 import { TFilterObj } from "../@types/Other.type";
+import { Review } from "../models/ReviewModal";
+import { Product } from "../models/ProductModal";
 
 export const deleteOne = <T>(Model: mongoose.Model<T>) =>
     expressAsyncHandler(async (req, res, next) => {
         const { id } = req.params;
-        await Model.findByIdAndDelete(id);
+        const data = await Model.findOneAndDelete({ _id: id});
+        console.log(Model.modelName)
+        if(Model.modelName === 'Review'){
+            //@ts-ignore
+            await Review.calcAvgRatingAndQty(data?.product as string)
+        }
         res.status(200).json({ message: `Deleted Successfuly` });
     });
 
@@ -17,22 +24,25 @@ export const updateOne = <T>(Modal: mongoose.Model<T>) =>
     expressAsyncHandler(async (req, res, next) => {
         const { id } = req.params;
         const data = await Modal.findByIdAndUpdate(id, req.body, { new: true });
+        data?.save()
         res.json(data);
     });
 
-export const createOne = <T>(Modal: mongoose.Model<T>) =>
+export const createOne = <T>(Modal: mongoose.Model<T>,options?:'review') =>
     expressAsyncHandler(async (req: TQuerParamsREQ, res) => {
-        console.log(req.body)
-        const data = await Modal.create(req.body);
+        const data = await Modal.create(req.body) 
         res.status(201).json(data);
     });
 
-export const getOne = <T>(Modal: mongoose.Model<T>) =>
+export const getOne = <T>(Modal: mongoose.Model<T>, populateString?: string) =>
     expressAsyncHandler(async (req: TQuerParamsREQ, res, next) => {
         //@ts-ignore
-        const data = await Modal.findById(req.params.id);
-        // .populate("brand", "name").populate("category", "name").populate("subcategories", "name");
-        
+        let query = Modal.findById(req.params.id);
+        if (populateString) {
+           //@ts-ignore
+            query = query.populate(populateString);
+        }
+        const data = await query;
         if (!data) {
             return next(new ApiError("No data", 404));
         }
@@ -40,7 +50,7 @@ export const getOne = <T>(Modal: mongoose.Model<T>) =>
         res.json(data);
     });
 
-export const getAll = <T>(Modal: mongoose.Model<T>, ByMethod?: "ByName" | "ByTitle") =>
+export const getAll = <T>(Modal: mongoose.Model<T>, ByMethod: "ByName" | "ByTitle" = "ByTitle") =>
     expressAsyncHandler(async (req, res, next) => {
         const _req = req as TFilterObj;
         const apiFeatures = new ApiFeatures(Modal, Modal, req.query);

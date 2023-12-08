@@ -15,6 +15,7 @@ export type TUserSchema = {
     passwordResetCode:string | undefined
     passwordResetCodeExpires:Date | undefined
     passwordResetVerified:boolean | undefined
+    wishlist: string[]
 }
 
 export interface IUser extends Request<TQueryParams, {}, TUserSchema> {

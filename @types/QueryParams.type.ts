@@ -10,6 +10,7 @@ export type TQueryParams = {
     keyword?:string
     category?:string
     categoryID?:string
+    productId?:string
 }
 
 export type TBodyParma = {

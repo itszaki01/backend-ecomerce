@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e7dcb786-50cd-4d67-b664-71eeb92e496a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/@types/QueryParams.type.ts" beforeDir="false" afterPath="$PROJECT_DIR$/@types/QueryParams.type.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/handlersFactory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/handlersFactory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/filterObjMw.ts" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/filterObjMw.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/reviewsModal.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/ProductRoute.ts" beforeDir="false" afterPath="$PROJECT_DIR$/routes/ProductRoute.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/authService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/authService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/userService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/userService.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2ZDz1etXPnxzX2AZfWqSh6XujQU" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/blx/Desktop/backend-ecomerce",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e7dcb786-50cd-4d67-b664-71eeb92e496a" name="Changes" comment="" />
+      <created>1701971245831</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1701971245831</updated>
+      <workItem from="1701971249761" duration="93000" />
+    </task>
+    <servers />
+  </component>
+</project>

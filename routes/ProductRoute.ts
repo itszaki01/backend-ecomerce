@@ -8,6 +8,7 @@ import {
 } from "../utils/validators/ProductValidators";
 import { imagesRsizer, uploadImages } from "../middlewares/uploadImages";
 import { auth, allowTo } from "../services/authService";
+import { ReviewRoute } from "./ReviewRoute";
 
 
 const router = express.Router();
@@ -23,5 +24,5 @@ router
     .put(auth,allowTo('admin'),updateProductValidator, updateProduct)
     .delete(auth,allowTo('admin'),deleteProductValidator, deleteProduct);
 
-
+router.use('/:productID/reviews',ReviewRoute)
 export const ProductRoute = router;

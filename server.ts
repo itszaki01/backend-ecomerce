@@ -13,6 +13,8 @@ import bodyParser from "body-parser";
 import { UserRoute } from "./routes/UserRoute";
 import { authRoute } from "./routes/authRoute";
 import { uploadProgressMiddleware } from "./middlewares/uploadProgressMiddleware";
+import { ReviewRoute } from "./routes/ReviewRoute";
+import { whishListRouter } from "./routes/wishListRoute";
 
 //Configs
 dotenv.config({ path: "./config.env" });
@@ -47,6 +49,8 @@ app.use(`${BASE_PATH}/brands`, BrandRoute);
 app.use(`${BASE_PATH}/products`, ProductRoute);
 app.use(`${BASE_PATH}/users`, UserRoute);
 app.use(`${BASE_PATH}/auth`, authRoute);
+app.use(`${BASE_PATH}/reviews`, ReviewRoute);
+app.use(`${BASE_PATH}/wishlist`, whishListRouter);
 
 
 

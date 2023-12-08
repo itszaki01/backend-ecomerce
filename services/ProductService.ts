@@ -18,7 +18,7 @@ export const getAllProducts = getAll(Product,'ByTitle')
  *  @access Public
  */
 //==========================================
-export const getProduct = getOne(Product)
+export const getProduct = getOne(Product,'reviews')
 
 //==========================================
 /**

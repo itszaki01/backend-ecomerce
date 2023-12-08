@@ -75,9 +75,9 @@ export const deleteUser = deleteOne(User);
  */
 //==========================================
 // @ts-ignore
-export const getLoggedUserData = expressAsyncHandler(async (req:IUser, res, next) => {
-    req.params.id = req.user._id
-    next()
+export const getLoggedUserData = expressAsyncHandler(async (req: IUser, res, next) => {
+    req.params.id = req.user._id;
+    next();
 });
 
 //==========================================
@@ -88,7 +88,7 @@ export const getLoggedUserData = expressAsyncHandler(async (req:IUser, res, next
  */
 //==========================================
 // @ts-ignore
-export const updateLoggedUserPassword = expressAsyncHandler(async (req:IUser, res, next) => {
+export const updateLoggedUserPassword = expressAsyncHandler(async (req: IUser, res, next) => {
     const { password } = req.body;
     await User.findByIdAndUpdate(req.user._id, {
         password: await bycript.hash(password, 12),
@@ -98,8 +98,7 @@ export const updateLoggedUserPassword = expressAsyncHandler(async (req:IUser, re
         status: "success",
         message: "Password changed successfully",
     });
-})
-
+});
 
 //==========================================
 /**
@@ -115,11 +114,11 @@ export const updateLoggedUserProfile = expressAsyncHandler(async (req, res, next
         email: req.body.email,
         phone: req.body.phone,
         slug: req.body.slug,
-    }
-    req.body = payload 
+    };
+    req.body = payload;
     //@ts-ignore
-    req.params.id = req.user._id
+    req.params.id = req.user._id;
     console.log(req.body);
-    
-   next()
-})
+
+    next();
+});

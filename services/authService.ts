@@ -4,10 +4,15 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/apiError";
 import bycript from "bcryptjs";
 import { IUser } from "../@types/User.type";
-import crypto from "crypto";
 import { sendEmail } from "../utils/sendEmail";
 
-
+//==================================
+/**
+ *  @desc    Signup
+ *  @route   POST /api/v1/auth/signup
+ *  @access  Public
+ */
+//==================================
 export const signup = expressAsyncHandler(async (req, res, next) => {
     const { name, email, password, profileImg, phone, slug } = req.body;
     const user = await User.create({
@@ -27,6 +32,13 @@ export const signup = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
+//==================================
+/**
+ *  @desc    Login
+ *  @route   POST /api/v1/auth/login
+ *  @access  Public
+ */
+//==================================
 export const login = expressAsyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email }).select("+password");
     if (!user) {
@@ -44,6 +56,12 @@ export const login = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
+//==================================
+/**
+ *  @desc    Auth
+ *  @route   GET /api/v1/auth
+ */
+//==================================
 //@ts-ignore
 export const auth = expressAsyncHandler(async (req: IUser, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
@@ -61,6 +79,10 @@ export const auth = expressAsyncHandler(async (req: IUser, res, next) => {
     next();
 });
 
+//==================================
+/**
+ *  @desc    Roles Authorization
+ */
 type Role = "admin" | "user";
 export const allowTo = (...roles: Role[]) =>
     //@ts-ignore
@@ -69,29 +91,34 @@ export const allowTo = (...roles: Role[]) =>
             return next(new ApiError("You are not allowed to access this route", 403));
         }
         next();
-});
+    });
 
+//==================================
+/**
+ *  @desc    Forgot Password
+ *  @route   POST /api/v1/auth/forgotPassword
+ *  @access  Public
+ */
+//==================================
 //@ts-ignore
 export const forgotPassword = expressAsyncHandler(async (req: IUser, res, next) => {
     //1. Check if user exists
     const user = await User.findOne({ email: req.body.email });
-
     if (!user) {
         return next(new ApiError("no user found with this email", 404));
     }
 
     //3. Send the link with token to user's email
-   const resetToken = jwt.sign({ userEMAIL: req.body.email }, process.env.JWT_SECRET_KEY!, { expiresIn: '10m' });
-   const message = `click on this link to reset your password reset toke = http .... /resetPassword?token=${resetToken}`
-   
+    const resetToken = jwt.sign({ userEMAIL: req.body.email }, process.env.JWT_SECRET_KEY!, { expiresIn: "10m" });
+    const message = `click on this link to reset your password reset toke = http .... /resetPassword?token=${resetToken}`;
+
     try {
         await sendEmail({ to: user.email, text: message, subject: "Password reset Link" });
     } catch (error) {
-        if(process.env.NODE_ENV === 'DEV'){
+        if (process.env.NODE_ENV === "DEV") {
             const _error = error as Error;
             return next(new ApiError(`SMTP ERROR: ${_error.message}`, 500));
-            
-        }else{
+        } else {
             return next(new ApiError("Something went wrong, please try again later", 500));
         }
     }
@@ -101,7 +128,13 @@ export const forgotPassword = expressAsyncHandler(async (req: IUser, res, next) 
     });
 });
 
-
+//==================================
+/**
+ *  @desc    Reset Password
+ *  @route   POST /api/v1/auth/resetPassword
+ *  @access  Public
+ */
+//==================================
 export const resetPassword = expressAsyncHandler(async (req, res, next) => {
     //1. Get user based on the token
     const token = req.query.token as string;
@@ -119,13 +152,12 @@ export const resetPassword = expressAsyncHandler(async (req, res, next) => {
         return next(new ApiError("Token already used", 401));
     }
 
-    user.password = req.body.newPassword
-    user.passwordChangedAt = new Date(Date.now())
-    await user.save()
+    user.password = req.body.newPassword;
+    user.passwordChangedAt = new Date(Date.now());
+    await user.save();
 
     res.status(200).json({
         status: "success",
         menubar: "Password reset successfully, please login again",
     });
-})
-
+});
