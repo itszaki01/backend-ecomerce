@@ -8,6 +8,7 @@ import path from "path";
 import cors from 'cors'
 import compression  from 'compression'
 import { mountedRoutes } from "./routes";
+import { webhookCheckout } from "./services/OrderService";
 
 //Configs
 dotenv.config({ path: "./config.env" });
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, "uploads")));
 //ConnectDB
 connectDB(DB_URI);
 
+app.post('/webhook-checkout', express.raw({type: 'application/json'}),webhookCheckout )
 //Middlewares
 app.use(express.json());
 // app.use(uploadProgressMiddleware)
@@ -44,7 +46,6 @@ if (NODE_ENV.startsWith("DEV")) {
 
 //Routes
 mountedRoutes(app, BASE_PATH);
-
 //Express Error Hanlders
 app.all("*", route404Hanlder);
 app.use(expressErrorHandler);

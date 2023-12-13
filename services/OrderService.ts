@@ -4,8 +4,9 @@ import { ApiError } from "../utils/apiError";
 import { Order } from "../models/OrderModal";
 import { Product } from "../models/ProductModal";
 import { getAll, getOne } from "../helpers/handlersFactory";
+import { User } from "../models/UserModal";
 const Stripe = require("stripe");
-const stripe = Stripe("sk_test_51ODOYKEdSuAaiQN8jOAjhJ02QhMpsv79GWSA8bcOiDOEyAHxGLkYvixvkPh9p3qXZmUs0ysJzZZxAfz0mk1K77Uw00xb1mZaiq");
+const stripe = Stripe(process.env.STRIPE_SECRET);
 
 export const createCashOrder = expressAsyncHandler(async (req, res, next) => {
     const _req = req as any;
@@ -116,4 +117,70 @@ export const checkoutSession = expressAsyncHandler(async (req, res, next) => {
 
     // 4) send session to response
     res.status(200).json({ status: "success", session });
+});
+
+const createCardOrder = async (session: any,next:any) => {
+    const cartId = session.client_reference_id;
+    const userEmail = session.customer_email;
+    const shippingAddress = session.metadata;
+
+    console.log(cartId)
+    console.log(userEmail)
+    //app settings
+    let taxPrice = 0;
+    let shippingPrice = 0;
+    
+    const cart = await Cart.findById(cartId);
+    const user = await User.findOne({ email: userEmail });
+    if (!cart) return next(new ApiError('wrong cart id',404));
+    if (!user) return next(new ApiError('wrong user id',404));
+    //2: get order price and check if there is a coupon
+    const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalCartPrice;
+    const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
+
+    const order = await Order.create({
+        user: user._id,
+        cartItems: cart.cartItems,
+        shippingAddress,
+        shippingPrice,
+        taxPrice,
+        totalOrderPrice,
+        isPaid:true,
+        paidAt: new Date(Date.now()),
+        paymentMethod:'card'
+    });
+    //4: decrement products quntity and increase sold
+    if (order) {
+        const bulkOption = cart.cartItems.map((item) => ({
+            updateOne: {
+                filter: { _id: item.product },
+                update: { $inc: { quantity: -item.quantitiy, sold: +item.quantitiy } },
+            },
+        }));
+        //@ts-ignore
+        await Product.bulkWrite(bulkOption, {});
+
+        // 5) Clear cart depend on cartId
+        await Cart.findByIdAndDelete(cartId);
+    }
+};
+
+
+export const webhookCheckout = expressAsyncHandler(async (request, response,next) => {
+    const sig = request.headers["stripe-signature"];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(request.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+        const _err = err as { message: string };
+        console.log(`Webhook Error: ${_err.message}`);
+        response.status(400).send(`Webhook Error: ${_err.message}`);
+        return;
+    }
+    if (event.type === "checkout.session.completed") {
+        createCardOrder(event.data.object,next)
+    }
+    response.status(201).json({recived:true});
 });

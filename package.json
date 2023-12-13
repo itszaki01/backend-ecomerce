@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build":"npx tsc",
     "start:prod": "set NODE_ENV=PROD && set PORT=8000 && ts-node server.ts",
     "start:dev": "set NODE_ENV=DEV && set PORT=8000 && nodemon server.ts"
   },

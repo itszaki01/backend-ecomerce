@@ -18,7 +18,7 @@ export type TOrderSchema = {
     taxPrice:number,
     shippingPrice:number,
     totalOrderPrice:number,
-    paymentMethod:'cart' | 'cash'
+    paymentMethod:'card' | 'cash'
     isPaid: boolean,
     paidAt: Date,
     isDelivred:boolean,
