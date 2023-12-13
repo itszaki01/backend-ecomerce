@@ -5,11 +5,12 @@ import { route404Hanlder } from "./middlewares/route404Hanlder";
 import { expressErrorHandler } from "./middlewares/expressErrorHandler";
 import dotenv from "dotenv";
 import path from "path";
-import cors from 'cors'
-import compression  from 'compression'
+import cors from "cors";
+import compression from "compression";
 import { mountedRoutes } from "./routes";
 import { webhookCheckout } from "./services/OrderService";
-
+import { rateLimit } from "express-rate-limit";
+import hpp from 'hpp'
 //Configs
 dotenv.config({ path: "./config.env" });
 const NODE_ENV = process.env.NODE_ENV as string;
@@ -21,11 +22,11 @@ const BASE_PATH = process.env.BASE_PATH as string;
 const app = express();
 
 //allow other domains to access the api
-app.use(cors())
-app.options('*', cors())
+app.use(cors());
+app.options("*", cors());
 
 //compress the api response
-app.use(compression())
+app.use(compression());
 
 //allow static files
 app.use(express.static(path.join(__dirname, "uploads")));
@@ -33,9 +34,10 @@ app.use(express.static(path.join(__dirname, "uploads")));
 //ConnectDB
 connectDB(DB_URI);
 
-app.post('/webhook-checkout', express.raw({type: 'application/json'}),webhookCheckout )
+//stripe webhook evenet listner
+app.post("/webhook-checkout", express.raw({ type: "application/json" }), webhookCheckout);
 //Middlewares
-app.use(express.json());
+app.use(express.json({ limit: "20kb" }));
 // app.use(uploadProgressMiddleware)
 if (NODE_ENV.startsWith("DEV")) {
     app.use(morgan("dev"));
@@ -44,6 +46,16 @@ if (NODE_ENV.startsWith("DEV")) {
     console.log(`Mode == ${NODE_ENV}`);
 }
 
+//limit rquessts per each ip
+const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit:100,
+    message: 'limited requests'
+});
+app.use(limiter)
+
+//protect against HTTP Parameter Pollution
+app.use(hpp())
 //Routes
 mountedRoutes(app, BASE_PATH);
 //Express Error Hanlders
