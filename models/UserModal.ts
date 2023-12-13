@@ -53,12 +53,21 @@ const userSchema = new mongoose.Schema<TUserSchema>(
             enum: ["user", "admin"],
             default: "user",
         },
-        wishlist:[
+        wishlist: [
             {
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'Product',
-            }
-        ]
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Product",
+            },
+        ],
+        addresses: [
+            {
+                alias: { type: "String" },
+                details: { type: "String" },
+                phone: { type: "String" },
+                city: { type: "String" },
+                postalCode: { type: "String" },
+            },
+        ],
     },
     { timestamps: true }
 );

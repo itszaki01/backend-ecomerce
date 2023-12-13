@@ -1,20 +1,13 @@
 import express from "express";
 import morgan from "morgan";
 import { connectDB } from "./config/db";
-import { CategoryRouter } from "./routes/CategoryRoute";
 import { route404Hanlder } from "./middlewares/route404Hanlder";
 import { expressErrorHandler } from "./middlewares/expressErrorHandler";
 import dotenv from "dotenv";
-import { SubCategoryRoute } from "./routes/SubCategoryRoute";
-import { BrandRoute } from "./routes/BrandRoute";
-import { ProductRoute } from "./routes/ProductRoute";
 import path from "path";
-import bodyParser from "body-parser";
-import { UserRoute } from "./routes/UserRoute";
-import { authRoute } from "./routes/authRoute";
-import { uploadProgressMiddleware } from "./middlewares/uploadProgressMiddleware";
-import { ReviewRoute } from "./routes/ReviewRoute";
-import { whishListRouter } from "./routes/wishListRoute";
+import cors from 'cors'
+import compression  from 'compression'
+import { mountedRoutes } from "./routes";
 
 //Configs
 dotenv.config({ path: "./config.env" });
@@ -26,8 +19,15 @@ const BASE_PATH = process.env.BASE_PATH as string;
 //Create app
 const app = express();
 
+//allow other domains to access the api
+app.use(cors())
+app.options('*', cors())
+
+//compress the api response
+app.use(compression())
+
 //allow static files
-app.use(express.static(path.join(__dirname,'uploads')))
+app.use(express.static(path.join(__dirname, "uploads")));
 
 //ConnectDB
 connectDB(DB_URI);
@@ -43,16 +43,7 @@ if (NODE_ENV.startsWith("DEV")) {
 }
 
 //Routes
-app.use(`${BASE_PATH}/categories`, CategoryRouter);
-app.use(`${BASE_PATH}/subcategories`, SubCategoryRoute);
-app.use(`${BASE_PATH}/brands`, BrandRoute);
-app.use(`${BASE_PATH}/products`, ProductRoute);
-app.use(`${BASE_PATH}/users`, UserRoute);
-app.use(`${BASE_PATH}/auth`, authRoute);
-app.use(`${BASE_PATH}/reviews`, ReviewRoute);
-app.use(`${BASE_PATH}/wishlist`, whishListRouter);
-
-
+mountedRoutes(app, BASE_PATH);
 
 //Express Error Hanlders
 app.all("*", route404Hanlder);
